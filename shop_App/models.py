@@ -27,6 +27,8 @@ class ProductImage(models.Model):
     Producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='images')
     Imagen = models.ImageField(upload_to='products', blank=True, null=True)
 
+    def __str__(self):
+        return self.Producto.Nombre
 
 
 class Comentario(models.Model):

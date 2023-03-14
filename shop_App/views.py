@@ -1,30 +1,56 @@
 from rest_framework import generics, mixins
-from rest_framework import viewsets
-from .models import Producto, Comentario
+from rest_framework import generics
+from .models import Producto, Comentario, ProductImage
 from rest_framework import status
 from rest_framework.response import Response
-from .serializers import ProductSerializer, ComentarioSerializer
+from .serializers import ProductSerializer, ComentarioSerializer, ProductImageSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView 
 
 
 #Create a new product 
-class ProductListCreateView(viewsets.ViewSet):
+class ProductListCreateView(generics.ListCreateAPIView):
 
-      def list(self, request):
-        queryset = Producto.objects.all()
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
 
 
 #Ver todos los productos    
 class ProductosView(APIView): 
     def get(self, request, *args, **kwargs):
 
+        prod = []
         productos = Producto.objects.all()
-        serializer = ProductSerializer(productos, many=True)
+
+        for pr in productos: 
+            ImageArray = []
+            imagenes = ProductImage.objects.filter(Producto = pr)
+            for i in imagenes: 
+                ImageArray.append(i.Imagen)
+
+            data = {
+                'Nombre': pr.Nombre, 
+                'id': pr.id, 
+                'images': ImageArray, 
+                'Descripcion': pr.Descripcion, 
+                'Caracteristicas': pr.Caracteristicas, 
+                'Categoria': pr.Categoria, 
+                'Disponible': pr.Disponible,
+                'Precio_base': pr.Precio_base, 
+                'Porcentaje_plataforma': pr.Porcentaje_plataforma, 
+                'Portada': pr.Portada, 
+                'Porcentaje_venta': pr.Porcentaje_venta, 
+                'Precio_calculado': pr.Precio_calculado, 
+                'material': pr.material, 
+                'Estado': pr.Estado,
+                'Genero': pr.Genero, 
+                'Usuario': pr.Usuario
+            }
+            prod.append(data)
+
+        serializer = ProductSerializer(prod, many=True)
         return Response(serializer.data)
-    
+        
 
 #Ver detalle de un producto
 class ProductoDetalleView(APIView): 
@@ -53,6 +79,7 @@ class FirstProducts(APIView):
         serializer = ProductSerializer(productos, many=True)
         return Response(serializer.data)
     
+
 
 #Obtener productos por categoria 
 class ProductCategoria(APIView): 
