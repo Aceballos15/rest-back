@@ -52,13 +52,11 @@ class MyProfileView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, doc ):
+    def get(self, request, doc):
 
-        print(request.data)
+        usuario = Usuario.objects.filter(Documento = doc) 
 
-        usuario = Usuario.objects.get(Documento = doc) 
-
-        serializer = UsuarioSerializer(usuario)
+        serializer = UsuarioSerializer(usuario, many=True)
 
         return Response(serializer.data)
     
