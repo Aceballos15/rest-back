@@ -3,6 +3,8 @@ from rest_framework.response import Response
 
 from .models import Producto, ProductImage, Comentario 
 
+
+# Serializer for images 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -10,6 +12,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 
+# Serializer for a product and create many images for this
 class ProductSerializer(serializers.ModelSerializer):
 
     images = ProductImageSerializer(many=True,  required=False, read_only=True)
@@ -17,25 +20,22 @@ class ProductSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(max_length=1000, use_url = True)
     )
-
-    
     class Meta:
         model = Producto
         fields = '__all__'
 
-    def create(self, validated_data):
-        
+
+    def create(self, validated_data): 
         images_data = validated_data.pop('images')
-
-        pr = Producto.objects.create(**validated_data)
+        product = Producto.objects.create(**validated_data)
       
-        for img in images_data:
-             
-            ProductImage.objects.create(Producto=pr, Imagen=img)
+        for img in images_data:  
+            ProductImage.objects.create(Producto=product, Imagen=img)
 
-        return pr
+        return product
      
 
+# Serializer for a comment form 
 class ComentarioSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Comentario

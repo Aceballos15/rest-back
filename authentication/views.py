@@ -13,6 +13,7 @@ from .models import Usuario
 from .serializers import UsuarioSerializer
 
 
+# Register a new user 
 class RegisterView(APIView): 
     def post(self, request, format=None): 
 
@@ -27,6 +28,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
+# Login view -> obtain a token 
 class LoginView(APIView):
 
     def post(self, request, format=None):
@@ -46,7 +48,8 @@ class LoginView(APIView):
         return Response({'error': 'Credenciales inválidas.'}, status=400)  
 
 
-        
+# My profile view 
+      
 class MyProfileView(APIView):
 
     authentication_classes = [JWTAuthentication]
@@ -55,6 +58,7 @@ class MyProfileView(APIView):
     def get(self, request, doc):
 
         usuario = Usuario.objects.filter(Documento = doc) 
+
 
         serializer = UsuarioSerializer(usuario, many=True)
 

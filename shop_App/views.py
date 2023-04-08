@@ -17,7 +17,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
 
 
-#Ver todos los productos    
+#View all products   
 class ProductosView(APIView): 
     def get(self, request, *args, **kwargs):
 
@@ -54,7 +54,7 @@ class ProductosView(APIView):
         return Response(serializer.data)
         
 
-#Ver detalle de un producto
+#View a product detail 
 class ProductoDetalleView(APIView): 
     def get(self, request, id): 
 
@@ -96,11 +96,12 @@ class ProductoDetalleView(APIView):
         serializer = ProductSerializer(producto, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+
+        return Response({ "Message": "Producto actualizado satisfactoriamente"})
     
 
 
-#Ver los primeros 6 productos
+#View first six products 
 class FirstProducts(APIView):
     def get(self, request): 
         prod = []
@@ -137,7 +138,7 @@ class FirstProducts(APIView):
     
 
 
-#Obtener productos por categoria 
+#get products for category  
 class ProductCategoria(APIView): 
     def get(self, request, category, *args, **kwargs): 
 
@@ -175,7 +176,7 @@ class ProductCategoria(APIView):
     
 
 
-#Autorizar producto
+#Autorize product 
 class AutorizarProducto(generics.UpdateAPIView, mixins.UpdateModelMixin):
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
@@ -190,7 +191,7 @@ class AutorizarProducto(generics.UpdateAPIView, mixins.UpdateModelMixin):
         return Response({ "message": "Producto autorizado satisfactoriamente"})
     
 
-#Agregar comentario 
+#Add comment 
 class ComentarView(APIView): 
 
     def post(self, request, *args, **kwargs):
@@ -205,7 +206,7 @@ class ComentarView(APIView):
         return Response(serializer.errors, status=400)
     
 
-#Ver los comentarios de un producto
+#View all comments of a product 
 class VerComentarios(APIView):
 
     def get(self, request, id):
@@ -215,6 +216,7 @@ class VerComentarios(APIView):
         return Response(serializer.data)
     
 
+# Update a coment
     def put(self, request, id):
 
         Comentarios = get_object_or_404(Comentario, id= id)

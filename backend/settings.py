@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-        'NAME': 'artefex-3.3',
+        'NAME': 'artefex_oficial_one',
         'USER': 'postgres',
         'PASSWORD': 'aceballos',
         'HOST': 'localhost',
