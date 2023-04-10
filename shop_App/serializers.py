@@ -20,20 +20,23 @@ class ProductSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(max_length=1000, use_url = True)
     )
+    
     class Meta:
         model = Producto
         fields = '__all__'
 
 
     def create(self, validated_data): 
+
         images_data = validated_data.pop('images')
         product = Producto.objects.create(**validated_data)
       
+   
+
         for img in images_data:  
             ProductImage.objects.create(Producto=product, Imagen=img)
 
-        return product
-     
+        return product.name   
 
 # Serializer for a comment form 
 class ComentarioSerializer(serializers.ModelSerializer):
