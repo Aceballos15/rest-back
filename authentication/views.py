@@ -40,9 +40,11 @@ class LoginView(APIView):
         if user: 
             refresh = RefreshToken.for_user(user[0])
 
+            access = AccessToken.for_user(user[0])
+
             return Response({
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'access': str(access),
             })
 
         return Response({'error': 'Credenciales inválidas.'}, status=400)  
@@ -58,7 +60,6 @@ class MyProfileView(APIView):
     def get(self, request, doc):
 
         usuario = Usuario.objects.filter(Documento = doc) 
-
 
         serializer = UsuarioSerializer(usuario, many=True)
 

@@ -17,7 +17,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
 
 
-#View all products   
+#View all products  
 class ProductosView(APIView): 
     def get(self, request, *args, **kwargs):
 
@@ -54,8 +54,12 @@ class ProductosView(APIView):
         return Response(serializer.data)
         
 
-#View a product detail 
-class ProductoDetalleView(APIView): 
+#View a product detail or edit a product
+class ProductoDetalleView(generics.UpdateAPIView, mixins.UpdateModelMixin): 
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'
+   
     def get(self, request, id): 
 
         prod = []
@@ -90,10 +94,12 @@ class ProductoDetalleView(APIView):
         serializer = ProductSerializer(prod, many=True)
         return Response(serializer.data)
     
-    def put(self, request, id):
 
-        producto = get_object_or_404(Producto, id= id)
-        serializer = ProductSerializer(producto, data=request.data)
+    # Edit a product by id 
+    def put(self, request, id):
+        instance = self.get_object()
+        
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -191,6 +197,27 @@ class AutorizarProducto(generics.UpdateAPIView, mixins.UpdateModelMixin):
         return Response({ "message": "Producto autorizado satisfactoriamente"})
     
 
+
+# Assign % for a pruduct and calculate his total and partial price 
+class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin): 
+
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        instance.Precio_calculado = instance.Precio_base + (instance.Precio_base * (instance.Porcentaje_plataforma / 100)) + (instance.Precio_base * (instance.Porcentaje_venta / 100)) 
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({ "message": "Porcentajes agregados correctamente"})
+
+        
+
 #Add comment 
 class ComentarView(APIView): 
 
@@ -206,7 +233,7 @@ class ComentarView(APIView):
         return Response(serializer.errors, status=400)
     
 
-#View all comments of a product 
+#View all comments of a product and edit a comment 
 class VerComentarios(APIView):
 
     def get(self, request, id):

@@ -3,7 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    #Productos
+    #Products url's
      path('products/create/', views.ProductListCreateView.as_view()),
      path('products/', views.ProductosView.as_view()),
      path('products/<int:id>', views.ProductoDetalleView.as_view()),
@@ -11,12 +11,12 @@ urlpatterns = [
      path('products/<str:category>', views.ProductCategoria.as_view()),
      path('products/autorizar/<int:id>', views.AutorizarProducto.as_view()),
 
-     #Comentarios
+     #Coments url's
      path('comentarios/create/', views.ComentarView.as_view()),
      path('comentarios/<int:id>', views.VerComentarios.as_view()),
 
-     #Carro de compras 
-     path('carrito/create/', views.VerComentarios.as_view()),
+     #Administration url's
+     path('admin/assign/<int:id>', views.CalculatePriceView.as_view())
 ]
 
 
