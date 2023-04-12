@@ -9,7 +9,6 @@ urlpatterns = [
      path('products/<int:id>', views.ProductoDetalleView.as_view()),
      path('productsDestacados/', views.FirstProducts.as_view()),
      path('products/<str:category>', views.ProductCategoria.as_view()),
-     path('products/autorizar/<int:id>', views.AutorizarProducto.as_view()),
 
      #Coments url's
      path('comentarios/create/', views.ComentarView.as_view()),

@@ -182,22 +182,6 @@ class ProductCategoria(APIView):
     
 
 
-#Autorize product 
-class AutorizarProducto(generics.UpdateAPIView, mixins.UpdateModelMixin):
-    queryset = Producto.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'id'
-
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({ "message": "Producto autorizado satisfactoriamente"})
-    
-
-
 # Assign % for a pruduct and calculate his total and partial price 
 class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin): 
 
@@ -208,11 +192,17 @@ class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin):
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        instance.Precio_calculado = instance.Precio_base + (instance.Precio_base * (instance.Porcentaje_plataforma / 100)) + (instance.Precio_base * (instance.Porcentaje_venta / 100)) 
+        instance.Porcentaje_plataforma = float(request.data['Porcentaje_plataforma'])
+        instance.Porcentaje_venta = float(request.data['Porcentaje_venta'])
+        instance.Precio_base = float(instance.Precio_base)
+
+
+        instance.Precio_calculado = float(instance.Precio_base) + ((instance.Precio_base * instance.Porcentaje_plataforma / 100 )+ (instance.Precio_base * instance.Porcentaje_venta / 100 ))
+        instance.Estado = True
 
         serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
 
         return Response({ "message": "Porcentajes agregados correctamente"})
 

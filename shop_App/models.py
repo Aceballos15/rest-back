@@ -1,5 +1,5 @@
 from django.db import models
-from authentication.models import Usuario
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Producto(models.Model):
@@ -17,7 +17,7 @@ class Producto(models.Model):
     Portada = models.ImageField(upload_to='portada')
     Estado = models.BooleanField(default=False)
     Genero = models.CharField(max_length=3, null=True, blank=True)
-    Usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    Usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.Nombre 

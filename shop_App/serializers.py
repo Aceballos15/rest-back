@@ -28,15 +28,38 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data): 
 
+
         images_data = validated_data.pop('images')
         product = Producto.objects.create(**validated_data)
       
-   
+        imagesArray = []
 
         for img in images_data:  
             ProductImage.objects.create(Producto=product, Imagen=img)
 
-        return product.name   
+            imagesArray.append(img)
+
+        data = {
+                'Nombre': product.Nombre, 
+                'id': product.id, 
+                'images': imagesArray, 
+                'Descripcion': product.Descripcion, 
+                'Caracteristicas': product.Caracteristicas, 
+                'Categoria': product.Categoria, 
+                'Disponible': product.Disponible,
+                'Precio_base': product.Precio_base, 
+                'Porcentaje_plataforma': product.Porcentaje_plataforma, 
+                'Portada': product.Portada, 
+                'Porcentaje_venta': product.Porcentaje_venta, 
+                'Precio_calculado': product.Precio_calculado, 
+                'material': product.material, 
+                'Estado': product.Estado,
+                'Genero': product.Genero, 
+                'Usuario': product.Usuario, 
+                'Message': "Producto creado satisfactoriamente"
+            }
+
+        return data
 
 # Serializer for a comment form 
 class ComentarioSerializer(serializers.ModelSerializer):
