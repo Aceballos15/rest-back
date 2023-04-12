@@ -14,7 +14,8 @@ from .models import Usuario
 from .serializers import UsuarioSerializer
 
 
-# Register a new user 
+# Register a new user. this function first creates a new user in the django table 
+# and then creates it's in the users moddel created by us 
 class RegisterView(APIView): 
     def post(self, request, format=None): 
 
@@ -33,29 +34,8 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-# Login view -> obtain a token 
-class LoginView(APIView):
 
-    def post(self, request, format=None):
-        
-        data = request.data
-
-        user = Usuario.objects.filter(Correo = data['correo'], Contrasena = data['password'])
-
-        if user: 
-
-            token =  RefreshToken.for_user(user[0])
-
-            return Response({
-                'refresh': str(token),
-                'access': str(token.access_token),
-            })
-
-        return Response({'error': 'Credenciales inválidas.'}, status=400)  
-
-
-# My profile view 
-      
+# My profile view      
 class MyProfileView(APIView):
 
     authentication_classes = [JWTAuthentication]

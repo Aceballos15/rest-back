@@ -208,7 +208,7 @@ class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin):
 
         
 
-#Add comment 
+#Add comment of a product 
 class ComentarView(APIView): 
 
     def post(self, request, *args, **kwargs):

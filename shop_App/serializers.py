@@ -26,6 +26,8 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+    #This function create a produict and create their respective images 
+    # with their relationship in the images table 
     def create(self, validated_data): 
 
 
