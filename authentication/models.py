@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Usuario(models.Model):
-    Documento = models.BigIntegerField(null=False, blank=False)
+    Documento = models.BigIntegerField(null=False, blank=False, unique=True)
     Nombres = models.CharField(max_length= 95)
     Correo = models.CharField(max_length= 255) 
     Direccion = models.CharField(max_length= 255) 

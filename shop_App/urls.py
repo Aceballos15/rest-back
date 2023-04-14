@@ -7,6 +7,7 @@ urlpatterns = [
      path('products/create/', views.ProductListCreateView.as_view()),
      path('products/', views.ProductosView.as_view()),
      path('products/<int:id>', views.ProductoDetalleView.as_view()),
+     path('products/update/<int:id>', views.EditProductView.as_view()),
      path('productsDestacados/', views.FirstProducts.as_view()),
      path('products/<str:category>', views.ProductCategoria.as_view()),
 
@@ -15,7 +16,8 @@ urlpatterns = [
      path('comentarios/<int:id>', views.VerComentarios.as_view()),
 
      #Administration url's
-     path('admin/assign/<int:id>', views.CalculatePriceView.as_view())
+     path('admin/assign/<int:id>', views.CalculatePriceView.as_view()),
+     path('admin/products/inactive/', views.InactiveProuctsView.as_view())
 ]
 
 

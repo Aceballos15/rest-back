@@ -34,7 +34,6 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-
 # My profile view      
 class MyProfileView(APIView):
 
@@ -49,5 +48,3 @@ class MyProfileView(APIView):
 
         return Response(serializer.data)
     
-
-

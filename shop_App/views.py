@@ -6,14 +6,60 @@ from rest_framework.response import Response
 from .serializers import ProductSerializer, ComentarioSerializer, ProductImageSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView 
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 #Create a new product 
 class ProductListCreateView(generics.ListCreateAPIView):
 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = Producto.objects.all()
     serializer_class = ProductSerializer
 
+
+
+# This function returns all products where status is false
+class InactiveProuctsView(APIView):
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        prod = []
+        productos = Producto.objects.filter(Estado = False)
+
+        print (productos.count())
+        for pr in productos: 
+            ImageArray = []
+            imagenes = ProductImage.objects.filter(Producto = pr)
+            for i in imagenes: 
+                ImageArray.append(i.Imagen)
+
+            data = {
+                'Nombre': pr.Nombre, 
+                'id': pr.id, 
+                'images': ImageArray, 
+                'Descripcion': pr.Descripcion, 
+                'Caracteristicas': pr.Caracteristicas, 
+                'Categoria': pr.Categoria, 
+                'Disponible': pr.Disponible,
+                'Precio_base': pr.Precio_base, 
+                'Porcentaje_plataforma': pr.Porcentaje_plataforma, 
+                'Portada': pr.Portada, 
+                'Porcentaje_venta': pr.Porcentaje_venta, 
+                'Precio_calculado': pr.Precio_calculado, 
+                'material': pr.material, 
+                'Estado': pr.Estado,
+                'Genero': pr.Genero, 
+                'Usuario': pr.Usuario
+            }
+            prod.append(data)
+
+        serializer = ProductSerializer(prod, many=True)
+
+        return Response(serializer.data)
+        
 
 
 
@@ -95,8 +141,19 @@ class ProductoDetalleView(generics.UpdateAPIView, mixins.UpdateModelMixin):
         return Response(serializer.data)
     
 
+
+#Edit a product 
+class EditProductView(generics.UpdateAPIView, mixins.UpdateModelMixin): 
+    queryset = Producto.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'  
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     # Edit a product by id 
     def put(self, request, id):
+
         instance = self.get_object()
         
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -104,7 +161,6 @@ class ProductoDetalleView(generics.UpdateAPIView, mixins.UpdateModelMixin):
         serializer.save()
 
         return Response({ "Message": "Producto actualizado satisfactoriamente"})
-    
 
 
 #View first six products 
@@ -189,6 +245,9 @@ class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin):
     serializer_class = ProductSerializer
     lookup_field = 'id'
 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
 
@@ -211,6 +270,8 @@ class CalculatePriceView(generics.UpdateAPIView, mixins.UpdateModelMixin):
 #Add comment of a product 
 class ComentarView(APIView): 
 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         
 
