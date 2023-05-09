@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView 
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics, mixins
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -48,3 +49,22 @@ class MyProfileView(APIView):
 
         return Response(serializer.data)
     
+
+# This function will update a user's profile, such as changing all information or changing partian information
+class UpdateProfileView(generics.UpdateAPIView, mixins.UpdateModelMixin):
+
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer	
+    lookup_field = 'Documento'
+
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+            return Response(serializer.data, status= 200)
+        else: 
+            return Response(serializer.errors, status = 401) 

@@ -12,6 +12,7 @@ urlpatterns = [
 
     #Profile view url 
     path('Profile/<doc>', views.MyProfileView.as_view()),
+    path('Profile/update/<Documento>', views.UpdateProfileView.as_view()),
 
     # Login url -> function for logging in
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 

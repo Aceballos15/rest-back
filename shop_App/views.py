@@ -1,5 +1,4 @@
 from rest_framework import generics, mixins
-from rest_framework import generics
 from .models import Producto, Comentario, ProductImage
 from rest_framework import status
 from rest_framework.response import Response
